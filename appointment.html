@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Consultation - SOA Healthcare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --secondary-sage: #68d391;
+            --warm-gray: #f7fafc;
+            --accent-gold: #d69e2e;
+            --charcoal: #2d3748;
+            --light-blue: #bee3f8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--warm-gray) 0%, #e6fffa 100%);
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .appointment-hero-bg {
+            background: linear-gradient(rgba(26, 54, 93, 0.8), rgba(26, 54, 93, 0.8)), url('resources/office-modern.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .calendar-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(26, 54, 93, 0.1);
+        }
+        
+        .calendar-day {
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        
+        .calendar-day:hover {
+            background-color: #dbeafe;
+            transform: scale(1.05);
+        }
+        
+        .calendar-day.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .calendar-day.disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        .calendar-day.disabled:hover {
+            background-color: transparent;
+            transform: none;
+        }
+        
+        .time-slot {
+            transition: all 0.2s ease;
+        }
+        
+        .time-slot:hover {
+            background-color: #dbeafe;
+            border-color: #3b82f6;
+        }
+        
+        .time-slot.selected {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-navy), #2c5282);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 54, 93, 0.3);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-navy), var(--secondary-sage));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .form-step {
+            transition: all 0.4s ease;
+        }
+        
+        .form-step.hidden {
+            opacity: 0;
+            transform: translateX(-50px);
+            pointer-events: none;
+        }
+        
+        .progress-bar {
+            transition: width 0.4s ease;
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.active {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .google-form-embed {
+            width: 100%;
+            min-height: 600px;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-display font-bold text-gradient">SOA Healthcare</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
+                        <a href="services.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Services</a>
+                        <a href="appointment.html" class="text-blue-600 px-3 py-2 text-sm font-medium">Book Consultation</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="services.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Services</a>
+                <a href="appointment.html" class="block px-3 py-2 text-blue-600">Book Consultation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Appointment Hero Section -->
+    <section class="appointment-hero-bg min-h-[50vh] flex items-center justify-center relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-transparent"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-6xl font-display font-bold text-white mb-6 reveal" data-splitting>
+                Book Your Consultation
+            </h1>
+            <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto reveal" style="animation-delay: 0.2s;">
+                Schedule a consultation to discuss your healthcare organization's needs.
+            </p>
+        </div>
+    </section>
+
+    <!-- Booking System Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-3 gap-12">
+                <!-- Calendar Section -->
+                <div class="lg:col-span-2">
+                    <div class="calendar-container p-8 reveal">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-semibold text-gray-900">Select Date & Time</h2>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="prevMonth()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <h3 id="current-month" class="text-lg font-semibold text-gray-700 min-w-[150px] text-center"></h3>
+                                <button onclick="nextMonth()" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="calendar-grid" class="mb-8"></div>
+                        
+                        <div id="time-slots" class="border-t pt-6">
+                            <p class="text-gray-500 text-center">Please select a date to view available time slots.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Consultation Form Section -->
+                <div class="lg:col-span-1">
+                    <div class="bg-white rounded-xl shadow-lg p-8 reveal" style="animation-delay: 0.2s;">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-6">Consultation Details</h2>
+                        
+                        <!-- Progress Bar -->
+                        <div class="mb-8">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Progress</span>
+                                <span class="text-sm text-gray-500">Step <span id="current-step">1</span> of 3</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="progress-bar" class="progress-bar bg-blue-600 h-2 rounded-full" style="width: 33%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2">
+                                <div id="step-indicator-1" class="step-indicator w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-semibold">1</div>
+                                <div id="step-indicator-2" class="step-indicator w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">2</div>
+                                <div id="step-indicator-3" class="step-indicator w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center text-sm font-semibold">3</div>
+                            </div>
+                        </div>
+
+                        <form id="appointment-form" class="space-y-6">
+                            <!-- Step 1: Basic Information -->
+                            <div id="step-1" class="form-step">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+                                
+                                <div>
+                                    <label for="fullName" class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                                    <input type="text" id="fullName" name="fullName" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                </div>
+                                
+                                <div>
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                                    <input type="email" id="email" name="email" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                </div>
+                                
+                                <div>
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                                    <input type="tel" id="phone" name="phone" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                </div>
+                                
+                                <div>
+                                    <label for="organization" class="block text-sm font-medium text-gray-700 mb-2">Organization Name *</label>
+                                    <input type="text" id="organization" name="organization" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                </div>
+                                
+                                <button type="button" onclick="nextStep()" 
+                                        class="w-full btn-primary text-white py-3 rounded-lg font-semibold transition-all">
+                                    Next Step
+                                </button>
+                            </div>
+
+                            <!-- Step 2: Service Selection -->
+                            <div id="step-2" class="form-step hidden">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Service Requirements</h3>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-3">Services Needed *</label>
+                                    <div class="space-y-2">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="services" value="strategic-consulting" 
+                                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-3 text-sm text-gray-700">Strategic Consulting</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="services" value="data-analytics" 
+                                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-3 text-sm text-gray-700">Data Analytics</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="services" value="risk-analysis" 
+                                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-3 text-sm text-gray-700">Risk Analysis</span>
+                                        </label>
+                                        <label class="flex items-center">
+                                            <input type="checkbox" name="services" value="liaison-services" 
+                                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                            <span class="ml-3 text-sm text-gray-700">Liaison Services</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <label for="consultationType" class="block text-sm font-medium text-gray-700 mb-2">Consultation Type *</label>
+                                    <select id="consultationType" name="consultationType" required 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Select consultation type</option>
+                                        <option value="initial-assessment">Initial Assessment</option>
+                                        <option value="strategy-review">Strategy Review</option>
+                                        <option value="project-consultation">Project Consultation</option>
+                                        <option value="ongoing-support">Ongoing Support</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="urgency" class="block text-sm font-medium text-gray-700 mb-2">Urgency Level *</label>
+                                    <select id="urgency" name="urgency" required 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Select urgency level</option>
+                                        <option value="immediate">Immediate (within 1 week)</option>
+                                        <option value="high">High (within 2 weeks)</option>
+                                        <option value="medium">Medium (within 1 month)</option>
+                                        <option value="low">Low (flexible timing)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex space-x-4">
+                                    <button type="button" onclick="prevStep()" 
+                                            class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                                        Previous
+                                    </button>
+                                    <button type="button" onclick="nextStep()" 
+                                            class="flex-1 btn-primary text-white py-3 rounded-lg font-semibold transition-all">
+                                        Next Step
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Project Details -->
+                            <div id="step-3" class="form-step hidden">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Project Details</h3>
+                                
+                                <div>
+                                    <label for="projectDescription" class="block text-sm font-medium text-gray-700 mb-2">Project Description *</label>
+                                    <textarea id="projectDescription" name="projectDescription" rows="4" required 
+                                              placeholder="Please describe your current challenges, goals, and what you hope to achieve..."
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label for="budgetRange" class="block text-sm font-medium text-gray-700 mb-2">Budget Range</label>
+                                    <select id="budgetRange" name="budgetRange" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Select budget range (optional)</option>
+                                        <option value="under-25k">Under $25,000</option>
+                                        <option value="25k-50k">$25,000 - $50,000</option>
+                                        <option value="50k-100k">$50,000 - $100,000</option>
+                                        <option value="100k-250k">$100,000 - $250,000</option>
+                                        <option value="250k-plus">$250,000+</option>
+                                        <option value="discuss-later">Prefer to discuss later</option>
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label for="timeline" class="block text-sm font-medium text-gray-700 mb-2">Expected Timeline</label>
+                                    <select id="timeline" name="timeline" 
+                                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                        <option value="">Select timeline (optional)</option>
+                                        <option value="immediate">Immediate (ASAP)</option>
+                                        <option value="1-3-months">1-3 months</option>
+                                        <option value="3-6-months">3-6 months</option>
+                                        <option value="6-12-months">6-12 months</option>
+                                        <option value="ongoing">Ongoing partnership</option>
+                                        <option value="flexible">Flexible</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="flex space-x-4">
+                                    <button type="button" onclick="prevStep()" 
+                                            class="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-all">
+                                        Previous
+                                    </button>
+                                    <button type="button" id="submit-btn" onclick="submitAppointment()" 
+                                            class="flex-1 btn-primary text-white py-3 rounded-lg font-semibold transition-all">
+                                        Book Consultation
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Google Form Integration Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 reveal">
+                <h2 class="text-3xl font-display font-bold text-gray-900 mb-4">Alternative Booking Method</h2>
+                <p class="text-lg text-gray-600">
+                    Prefer to use our Google Form? Fill out the form below to schedule your consultation.
+                </p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8 reveal" style="animation-delay: 0.2s;">
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Quick Consultation Request</h3>
+                    <p class="text-gray-600">This form connects to our consultation request system. All submissions are stored securely and we'll contact you within 24 hours.</p>
+                </div>
+                
+                <!-- Google Form Embed -->
+                <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdc8RllKSY2qMJL3jUUZExGYrJ6mvmn7e9E3H-Tbu43hrEHig/viewform?embedded=true" 
+                    class="google-form-embed"
+                    title="SOA Healthcare Consultation Request Form">
+                    Loading form...
+                </iframe>
+                
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                    <p class="text-sm text-blue-800">
+                        <strong>Note:</strong> After submitting the form, you will receive a confirmation email at ceo@soahealthcare.net. 
+                        We'll contact you within 24 hours to schedule your consultation.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Consultation Information -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl font-display font-bold text-gray-900 mb-4">What to Expect</h2>
+                <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                    Consultation services for healthcare organizations.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center reveal" style="animation-delay: 0.1s;">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-blue-600">1</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Initial Assessment</h3>
+                    <p class="text-gray-600">
+                        Initial assessment of healthcare organization needs.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-green-600">2</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Solution Design</h3>
+                    <p class="text-gray-600">
+                        Healthcare consulting solution design services.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.3s;">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-2xl font-bold text-yellow-600">3</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Implementation Roadmap</h3>
+                    <p class="text-gray-600">
+                        Healthcare consulting implementation planning services.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-2xl font-display font-bold mb-4">SOA Healthcare</h3>
+                    <p class="text-gray-400 mb-4">
+                        Healthcare consulting excellence through strategic guidance, data analytics, and risk management solutions.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="services.html" class="hover:text-white transition-colors">Strategic Consulting</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Data Analytics</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Risk Analysis</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Liaison Services</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="appointment.html" class="hover:text-white transition-colors">Schedule Consultation</a></li>
+                        <li>Email: ceo@soahealthcare.net</li>
+                        <li>Phone: (857) 565-6557</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 SOA Healthcare. All rights reserved. Healthcare consulting excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Google Form Configuration
+        // Your Google Form is already created and accessible at:
+        // https://forms.gle/g99jDpYMsjBMrfA19
+        const GOOGLE_FORM_ID = '1FAIpQLSdc8RllKSY2qMJL3jUUZExGYrJ6mvmn7e9E3H-Tbu43hrEHig';
+        const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_ID}/viewform`;
+        
+        // Google Form field entry IDs (these are the actual field IDs from your form)
+        const FORM_FIELDS = {
+            fullName: 'entry.2005620554',      // Full Name field
+            email: 'entry.1045781291',         // Email Address field  
+            phone: 'entry.1065046570',         // Phone Number field
+            organization: 'entry.1166974658',  // Organization Name field
+            services: 'entry.839337160',       // Services Needed field
+            consultationType: 'entry.2133057438', // Consultation Type field
+            urgency: 'entry.478678846',        // Urgency Level field
+            projectDescription: 'entry.700790395', // Project Description field
+            budgetRange: 'entry.1546767685',   // Budget Range field
+            timeline: 'entry.920860389'        // Expected Timeline field
+        };
+        
+        // Function to build pre-filled Google Form URL
+        function buildPrefilledUrl(formData) {
+            let url = `${GOOGLE_FORM_URL}?usp=pp_url`;
+            
+            // Add each field to the URL
+            Object.keys(formData).forEach(key => {
+                if (formData[key] && FORM_FIELDS[key]) {
+                    url += `&${FORM_FIELDS[key]}=${encodeURIComponent(formData[key])}`;
+                }
+            });
+            
+            return url;
+        }
+        
+        // Function to redirect to Google Form with pre-filled data
+        function redirectToGoogleForm(formData) {
+            const prefillUrl = buildPrefilledUrl(formData);
+            window.open(prefillUrl, '_blank');
+        }
+        
+        // Function to update iframe with pre-filled form
+        function updateGoogleForm(data) {
+            const iframe = document.querySelector('.google-form-embed');
+            if (iframe && data.fullName && data.email) {
+                const prefillUrl = buildPrefilledUrl(data);
+                iframe.src = prefillUrl;
+            }
+        }
+        
+        // Enhanced form submission with Google Form integration
+        function submitAppointment() {
+            if (!appointmentForm.validateCurrentStep()) return;
+            
+            // Collect form data
+            const formData = new FormData(document.getElementById('appointment-form'));
+            const data = Object.fromEntries(formData.entries());
+            
+            // Add selected date and time
+            if (calendarManager.selectedDate && appointmentForm.formData.selectedTime) {
+                data.selectedDate = calendarManager.selectedDate;
+                data.selectedTime = appointmentForm.formData.selectedTime;
+            }
+            
+            // Redirect to Google Form with pre-filled data
+            redirectToGoogleForm(data);
+            
+            // Show success message
+            appointmentForm.showSuccessMessage();
+            
+            // Optionally, scroll to Google Form section
+            document.querySelector('.google-form-embed').scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'center'
+            });
+        }
+        
+        // Override the main.js submitAppointment function
+        if (typeof submitAppointment !== 'undefined') {
+            window.submitAppointment = submitAppointment;
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>js"></script>
+</body>
+</html>cript>
+</body>
+</html>js"></script>
+</body>
+</html>

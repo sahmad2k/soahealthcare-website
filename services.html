@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - SOA Healthcare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --secondary-sage: #68d391;
+            --warm-gray: #f7fafc;
+            --accent-gold: #d69e2e;
+            --charcoal: #2d3748;
+            --light-blue: #bee3f8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--warm-gray) 0%, #e6fffa 100%);
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .service-hero-bg {
+            background: linear-gradient(rgba(26, 54, 93, 0.8), rgba(26, 54, 93, 0.8)), url('resources/consulting-team.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .service-detail-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .service-detail-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(26, 54, 93, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-navy), #2c5282);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 54, 93, 0.3);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-navy), var(--secondary-sage));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+        
+        .methodology-step {
+            position: relative;
+            padding-left: 3rem;
+        }
+        
+        .methodology-step::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 2rem;
+            height: 2rem;
+            background: var(--primary-navy);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .methodology-step:nth-child(1)::before { content: '1'; }
+        .methodology-step:nth-child(2)::before { content: '2'; }
+        .methodology-step:nth-child(3)::before { content: '3'; }
+        .methodology-step:nth-child(4)::before { content: '4'; }
+        .methodology-step:nth-child(5)::before { content: '5'; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-2xl font-display font-bold text-gradient">SOA Healthcare</a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
+                        <a href="services.html" class="text-blue-600 px-3 py-2 text-sm font-medium">Services</a>
+                        <a href="appointment.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Book Consultation</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="services.html" class="block px-3 py-2 text-blue-600">Services</a>
+                <a href="appointment.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Book Consultation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Services Hero Section -->
+    <section class="service-hero-bg min-h-[60vh] flex items-center justify-center relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/30 to-transparent"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-5xl md:text-6xl font-display font-bold text-white mb-6 reveal" data-splitting>
+                Our Services
+            </h1>
+            <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto reveal" style="animation-delay: 0.2s;">
+                Healthcare consulting services including strategic consulting, data analytics, risk analysis, and liaison services.
+            </p>
+        </div>
+    </section>
+
+    <!-- Strategic Consulting Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Strategic Healthcare Consulting</h2>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Strategic consulting services for healthcare organizations.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="methodology-step">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Comprehensive Assessment</h4>
+                            <p class="text-gray-600">Thorough analysis of current operations, challenges, and opportunities across all organizational levels.</p>
+                        </div>
+                        
+                        <div class="methodology-step">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Strategic Planning</h4>
+                            <p class="text-gray-600">Development of customized strategic roadmaps aligned with organizational goals and market dynamics.</p>
+                        </div>
+                        
+                        <div class="methodology-step">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Implementation Support</h4>
+                            <p class="text-gray-600">Hands-on guidance throughout strategy implementation with continuous monitoring and adjustment.</p>
+                        </div>
+                        
+                        <div class="methodology-step">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Performance Optimization</h4>
+                            <p class="text-gray-600">Ongoing performance monitoring and optimization to ensure sustained improvement and ROI.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <a href="appointment.html" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold inline-block">
+                            Discuss Your Strategy
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="reveal" style="animation-delay: 0.2s;">
+                    <div class="bg-gray-50 rounded-xl p-8">
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-6">Consulting Impact Metrics</h3>
+                        <div id="consulting-chart" style="height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Analytics Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="reveal" style="animation-delay: 0.1s;">
+                    <div class="bg-white rounded-xl p-8 shadow-sm">
+                        <h3 class="text-2xl font-semibold text-gray-900 mb-6">Analytics Capabilities</h3>
+                        <div id="analytics-chart" style="height: 350px;"></div>
+                    </div>
+                </div>
+                
+                <div class="reveal" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Advanced Data Analytics</h2>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Healthcare data analytics and insights services.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="service-detail-card p-6 rounded-lg">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Predictive Analytics</h4>
+                            <p class="text-gray-600 text-sm">Forecast patient outcomes, resource needs, and operational performance using machine learning models.</p>
+                        </div>
+                        
+                        <div class="service-detail-card p-6 rounded-lg">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Real-time Dashboards</h4>
+                            <p class="text-gray-600 text-sm">Interactive dashboards providing real-time insights into key performance indicators and operational metrics.</p>
+                        </div>
+                        
+                        <div class="service-detail-card p-6 rounded-lg">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Population Health</h4>
+                            <p class="text-gray-600 text-sm">Comprehensive analysis of patient populations to identify trends, risks, and intervention opportunities.</p>
+                        </div>
+                        
+                        <div class="service-detail-card p-6 rounded-lg">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">Clinical Outcomes</h4>
+                            <p class="text-gray-600 text-sm">Evidence-based analysis of clinical outcomes to support quality improvement initiatives.</p>
+                        </div>
+                    </div>
+                    
+                    <a href="appointment.html" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold inline-block">
+                        Explore Analytics Solutions
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Analysis Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Risk Analysis & Management</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Risk analysis and management services for healthcare organizations.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 mb-16">
+                <div class="service-detail-card p-8 rounded-xl text-center reveal" style="animation-delay: 0.1s;">
+                    <div class="w-16 h-16 bg-red-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Compliance Risk Assessment</h3>
+                    <p class="text-gray-600">
+                        Comprehensive evaluation of regulatory compliance across HIPAA, HITECH, and other healthcare regulations.
+                    </p>
+                </div>
+                
+                <div class="service-detail-card p-8 rounded-xl text-center reveal" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Security Risk Management</h3>
+                    <p class="text-gray-600">
+                        Advanced cybersecurity risk assessment and mitigation strategies to protect sensitive healthcare data.
+                    </p>
+                </div>
+                
+                <div class="service-detail-card p-8 rounded-xl text-center reveal" style="animation-delay: 0.3s;">
+                    <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Operational Risk Analysis</h3>
+                    <p class="text-gray-600">
+                        Systematic evaluation of operational risks and implementation of robust risk mitigation frameworks.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 rounded-xl p-8 reveal" style="animation-delay: 0.4s;">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-6 text-center">Risk Management Framework</h3>
+                <div id="risk-framework-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Liaison Services Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="reveal">
+                    <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Healthcare Liaison Services</h2>
+                    <p class="text-lg text-gray-600 mb-8">
+                        Healthcare liaison and stakeholder coordination services.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Stakeholder Coordination</h4>
+                                <p class="text-gray-600">Facilitate effective communication and collaboration between all healthcare stakeholders.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Partnership Development</h4>
+                                <p class="text-gray-600">Build strategic partnerships that drive innovation and improve patient care delivery.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Communication Strategy</h4>
+                                <p class="text-gray-600">Develop comprehensive communication strategies for complex healthcare initiatives.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start space-x-4">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-900 mb-2">Relationship Management</h4>
+                                <p class="text-gray-600">Ongoing relationship management to ensure sustained collaboration and mutual success.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <a href="appointment.html" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold inline-block">
+                            Start Partnership Discussion
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="reveal" style="animation-delay: 0.2s;">
+                    <div class="bg-white rounded-xl p-8 shadow-sm">
+                        <img src="resources/healthcare-liaison.jpg" alt="Healthcare Liaison Services" class="w-full h-64 object-cover rounded-lg mb-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Partnership Network</h3>
+                        <p class="text-gray-600 mb-6">
+                            Our extensive network includes healthcare providers, payers, technology vendors, 
+                            regulatory bodies, and industry associations to facilitate meaningful collaborations.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="font-semibold text-gray-900">500+</div>
+                                <div class="text-gray-600">Provider Partners</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="font-semibold text-gray-900">50+</div>
+                                <div class="text-gray-600">Technology Vendors</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="font-semibold text-gray-900">25+</div>
+                                <div class="text-gray-600">Regulatory Contacts</div>
+                            </div>
+                            <div class="bg-gray-50 p-3 rounded-lg">
+                                <div class="font-semibold text-gray-900">100+</div>
+                                <div class="text-gray-600">Industry Associations</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Service Integration Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-6">Integrated Service Delivery</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Our services work synergistically to provide comprehensive solutions that address 
+                    the full spectrum of healthcare organizational needs.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <div class="text-center reveal" style="animation-delay: 0.1s;">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Strategic Foundation</h3>
+                    <p class="text-gray-600">Consulting services provide the strategic foundation for all organizational improvements.</p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.2s;">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Data-Driven Insights</h3>
+                    <p class="text-gray-600">Analytics services provide the data insights needed to inform strategic decisions.</p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.3s;">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Risk Mitigation</h3>
+                    <p class="text-gray-600">Risk analysis ensures compliance and security throughout the transformation process.</p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.4s;">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Stakeholder Alignment</h3>
+                    <p class="text-gray-600">Liaison services ensure all stakeholders are aligned and collaborating effectively.</p>
+                </div>
+            </div>
+            
+            <div class="text-center reveal" style="animation-delay: 0.5s;">
+                <div class="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-8">
+                    <h3 class="text-2xl font-semibold text-gray-900 mb-4">Ready to Transform Your Healthcare Organization?</h3>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Let's discuss how our integrated services can address your specific challenges and goals.
+                    </p>
+                    <a href="appointment.html" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold inline-block">
+                        Schedule Comprehensive Consultation
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-2xl font-display font-bold mb-4">SOA Healthcare</h3>
+                    <p class="text-gray-400 mb-4">
+                        Healthcare consulting excellence through strategic guidance, data analytics, and risk management solutions.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Strategic Consulting</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Data Analytics</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Risk Analysis</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Liaison Services</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="appointment.html" class="hover:text-white transition-colors">Schedule Consultation</a></li>
+                        <li>Email: ceo@soahealthcare.net</li>
+                        <li>Phone: (857) 565-6557</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 SOA Healthcare. All rights reserved. Healthcare consulting excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize services page specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeServiceCharts();
+        });
+        
+        function initializeServiceCharts() {
+            // Consulting Impact Chart
+            const consultingChart = echarts.init(document.getElementById('consulting-chart'));
+            const consultingOption = {
+                title: {
+                    text: 'Consulting Impact Areas',
+                    left: 'center',
+                    textStyle: { fontSize: 16, fontWeight: 'bold' }
+                },
+                tooltip: { trigger: 'item' },
+                series: [{
+                    type: 'pie',
+                    radius: '70%',
+                    data: [
+                        { value: 35, name: 'Cost Reduction', itemStyle: { color: '#3B82F6' } },
+                        { value: 25, name: 'Efficiency Gains', itemStyle: { color: '#10B981' } },
+                        { value: 20, name: 'Quality Improvement', itemStyle: { color: '#F59E0B' } },
+                        { value: 20, name: 'Compliance Enhancement', itemStyle: { color: '#8B5CF6' } }
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }]
+            };
+            consultingChart.setOption(consultingOption);
+            
+            // Analytics Capabilities Chart
+            const analyticsChart = echarts.init(document.getElementById('analytics-chart'));
+            const analyticsOption = {
+                title: {
+                    text: 'Analytics Capabilities',
+                    left: 'center',
+                    textStyle: { fontSize: 16, fontWeight: 'bold' }
+                },
+                tooltip: { trigger: 'axis' },
+                radar: {
+                    indicator: [
+                        { name: 'Predictive Modeling', max: 100 },
+                        { name: 'Real-time Analytics', max: 100 },
+                        { name: 'Data Integration', max: 100 },
+                        { name: 'Visualization', max: 100 },
+                        { name: 'Machine Learning', max: 100 },
+                        { name: 'Statistical Analysis', max: 100 }
+                    ]
+                },
+                series: [{
+                    type: 'radar',
+                    data: [{
+                        value: [95, 90, 85, 88, 92, 90],
+                        name: 'Our Capabilities',
+                        itemStyle: { color: '#10B981' },
+                        areaStyle: { opacity: 0.3 }
+                    }]
+                }]
+            };
+            analyticsChart.setOption(analyticsOption);
+            
+            // Risk Framework Chart
+            const riskChart = echarts.init(document.getElementById('risk-framework-chart'));
+            const riskOption = {
+                title: {
+                    text: 'Risk Management Framework Components',
+                    left: 'center',
+                    textStyle: { fontSize: 18, fontWeight: 'bold' }
+                },
+                tooltip: { trigger: 'axis' },
+                legend: {
+                    data: ['Implementation Progress', 'Risk Mitigation'],
+                    bottom: 10
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['Assessment', 'Identification', 'Analysis', 'Mitigation', 'Monitoring', 'Reporting']
+                },
+                yAxis: {
+                    type: 'value',
+                    max: 100,
+                    axisLabel: { formatter: '{value}%' }
+                },
+                series: [
+                    {
+                        name: 'Implementation Progress',
+                        type: 'bar',
+                        data: [100, 95, 90, 85, 80, 90],
+                        itemStyle: { color: '#F59E0B' }
+                    },
+                    {
+                        name: 'Risk Mitigation',
+                        type: 'line',
+                        data: [95, 90, 85, 90, 95, 92],
+                        itemStyle: { color: '#EF4444' },
+                        smooth: true
+                    }
+                ]
+            };
+            riskChart.setOption(riskOption);
+            
+            // Make charts responsive
+            window.addEventListener('resize', () => {
+                consultingChart.resize();
+                analyticsChart.resize();
+                riskChart.resize();
+            });
+        }
+    </script>
+    <script src="main.js"></script>
+</body>
+</html>

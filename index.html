@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOA Healthcare - Healthcare Consulting Excellence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://unpkg.com/splitting@1.0.6/dist/splitting.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/splitting@1.0.6/dist/splitting.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-navy: #1a365d;
+            --secondary-sage: #68d391;
+            --warm-gray: #f7fafc;
+            --accent-gold: #d69e2e;
+            --charcoal: #2d3748;
+            --light-blue: #bee3f8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--warm-gray) 0%, #e6fffa 100%);
+            min-height: 100vh;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .hero-bg {
+            background: linear-gradient(rgba(26, 54, 93, 0.1), rgba(26, 54, 93, 0.1)), url('resources/hero-healthcare.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .service-card {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .service-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(26, 54, 93, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-navy), #2c5282);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(26, 54, 93, 0.3);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-navy), var(--secondary-sage));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-blur {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 nav-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-display font-bold text-gradient">SOA Healthcare</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="#home" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Home</a>
+                        <a href="services.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Services</a>
+                        <a href="appointment.html" class="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors">Book Consultation</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-700 hover:text-blue-600">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#home" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Home</a>
+                <a href="services.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Services</a>
+                <a href="appointment.html" class="block px-3 py-2 text-gray-700 hover:text-blue-600">Book Consultation</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-900/20 to-transparent"></div>
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-display font-bold text-white mb-6 reveal" data-splitting>
+                    SOA Healthcare
+                </h1>
+                <p class="text-xl md:text-2xl text-white mb-4 reveal" style="animation-delay: 0.2s;">
+                    Healthcare Consulting Excellence
+                </p>
+                <p class="text-lg text-white/90 mb-8 max-w-2xl mx-auto reveal" style="animation-delay: 0.4s;">
+                    Healthcare consulting services including strategic consulting, data analytics, and risk analysis.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center reveal" style="animation-delay: 0.6s;">
+                    <a href="appointment.html" class="btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg inline-block">
+                        Schedule Consultation
+                    </a>
+                    <a href="services.html" class="bg-white/20 backdrop-blur-sm text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white/30 transition-all">
+                        Our Services
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Animated Background Elements -->
+        <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-pulse"></div>
+        <div class="absolute bottom-20 right-10 w-16 h-16 bg-white/10 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/2 left-20 w-12 h-12 bg-white/10 rounded-full animate-pulse" style="animation-delay: 2s;"></div>
+    </section>
+
+    <!-- Services Overview -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-4">Our Core Services</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Healthcare consulting services for healthcare organizations.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Healthcare Consulting -->
+                <div class="service-card p-8 rounded-xl border border-gray-200 reveal" style="animation-delay: 0.1s;">
+                    <div class="w-16 h-16 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Strategic Consulting</h3>
+                    <p class="text-gray-600 mb-6">
+                        Healthcare strategy and operational consulting services.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Strategic Planning & Implementation</li>
+                        <li>• Operational Excellence</li>
+                        <li>• Performance Optimization</li>
+                        <li>• Change Management</li>
+                    </ul>
+                </div>
+
+                <!-- Data Analytics -->
+                <div class="service-card p-8 rounded-xl border border-gray-200 reveal" style="animation-delay: 0.2s;">
+                    <div class="w-16 h-16 bg-green-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Data Analytics</h3>
+                    <p class="text-gray-600 mb-6">
+                        Healthcare data analytics and insights services.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Predictive Analytics</li>
+                        <li>• Performance Dashboards</li>
+                        <li>• Population Health Insights</li>
+                        <li>• Clinical Outcomes Analysis</li>
+                    </ul>
+                </div>
+
+                <!-- Risk Analysis -->
+                <div class="service-card p-8 rounded-xl border border-gray-200 reveal" style="animation-delay: 0.3s;">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Risk Analysis</h3>
+                    <p class="text-gray-600 mb-6">
+                        Healthcare risk assessment and management services.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Compliance Risk Assessment</li>
+                        <li>• Security Risk Management</li>
+                        <li>• Operational Risk Analysis</li>
+                        <li>• Regulatory Compliance</li>
+                    </ul>
+                </div>
+
+                <!-- Liaison Services -->
+                <div class="service-card p-8 rounded-xl border border-gray-200 reveal" style="animation-delay: 0.4s;">
+                    <div class="w-16 h-16 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Liaison Services</h3>
+                    <p class="text-gray-600 mb-6">
+                        Healthcare liaison and stakeholder coordination services.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-2">
+                        <li>• Stakeholder Coordination</li>
+                        <li>• Partnership Development</li>
+                        <li>• Communication Strategy</li>
+                        <li>• Relationship Management</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-4">Why Choose Syed's of America</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    We combine deep healthcare industry expertise with innovative consulting approaches 
+                    to deliver measurable results for our clients.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center reveal" style="animation-delay: 0.1s;">
+                    <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Expertise & Innovation</h3>
+                    <p class="text-gray-600">
+                        Decades of combined experience in healthcare consulting with cutting-edge analytical capabilities and industry-leading methodologies.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.2s;">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Proven Results</h3>
+                    <p class="text-gray-600">
+                        Track record of delivering measurable improvements in operational efficiency, cost reduction, and patient outcomes across diverse healthcare settings.
+                    </p>
+                </div>
+                
+                <div class="text-center reveal" style="animation-delay: 0.3s;">
+                    <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-4">Client-Centered Approach</h3>
+                    <p class="text-gray-600">
+                        Tailored solutions that address your unique challenges and goals, with dedicated support throughout your transformation journey.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Client Success Metrics -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-display font-bold text-gray-900 mb-4">Client Success Metrics</h2>
+                <p class="text-xl text-gray-600">
+                    Measurable results that demonstrate our impact on healthcare organizations
+                </p>
+            </div>
+            
+            <div class="text-center mb-8">
+                <p class="text-lg text-gray-600">
+                    Healthcare consulting services for organizations seeking professional guidance.
+                </p>
+            </div>
+            
+            <!-- Interactive Chart -->
+            <div class="bg-gray-50 rounded-xl p-8 reveal" style="animation-delay: 0.5s;">
+                <h3 class="text-2xl font-semibold text-gray-900 mb-6 text-center">Healthcare Consulting Impact Analysis</h3>
+                <div id="impact-chart" style="height: 400px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 bg-gradient-to-r from-blue-900 to-blue-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="max-w-3xl mx-auto reveal">
+                <h2 class="text-4xl font-display font-bold text-white mb-6">
+                    Ready to Transform Your Healthcare Organization?
+                </h2>
+                <p class="text-xl text-white/90 mb-8">
+                    Schedule a consultation to discuss your healthcare organization's needs.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="appointment.html" class="bg-white text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all">
+                        Schedule Free Consultation
+                    </a>
+                    <a href="services.html" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-white hover:text-blue-900 transition-all">
+                        Explore Our Services
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-2xl font-display font-bold mb-4">SOA Healthcare</h3>
+                    <p class="text-gray-400 mb-4">
+                        Healthcare consulting excellence through strategic guidance, data analytics, and risk management solutions.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="services.html" class="hover:text-white transition-colors">Strategic Consulting</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Data Analytics</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Risk Analysis</a></li>
+                        <li><a href="services.html" class="hover:text-white transition-colors">Liaison Services</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="appointment.html" class="hover:text-white transition-colors">Schedule Consultation</a></li>
+                        <li>Email: ceo@soahealthcare.net</li>
+                        <li>Phone: (857) 565-6557</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 SOA Healthcare. All rights reserved. Healthcare consulting excellence.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>ml>ml>
